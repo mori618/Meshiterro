@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :is_matching_login_user, only: [:edit, :update]
   def show
     @user = User.find(params[:id])
     @post_images = @user.post_images.page(params[:page])
@@ -14,6 +15,12 @@ class UsersController < ApplicationController
     redirect_to user_path(@user.id)
   end
 
+  def is_matching_login_user
+    user = User.find(params[:id])
+    unless user.id == current_user.id
+      redirect_to post_images_path
+    end
+  end
   private
 
   def user_params
